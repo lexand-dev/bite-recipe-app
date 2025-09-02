@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 
 import {
   useMutation,
@@ -179,3 +179,4 @@ export function PostCardSkeleton(props: { pulse?: boolean }) {
     </div>
   );
 }
+ */
