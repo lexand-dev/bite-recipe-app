@@ -30,7 +30,7 @@ export function initAuth(options: {
          * Auto-inference blocked by https://github.com/better-auth/better-auth/pull/2891
          */
         currentURL: options.baseUrl,
-        /* productionURL: options.productionUrl, */
+        productionURL: options.productionUrl,
       }),
       expo(),
       nextCookies(),
@@ -40,20 +40,20 @@ export function initAuth(options: {
         clientId: options.discordClientId,
         clientSecret: options.discordClientSecret,
         // change to production URL when deploying
-        redirectURI: `${options.baseUrl}/api/auth/callback/discord`,
+        redirectURI: `${options.productionUrl}/api/auth/callback/discord`,
       },
       github: {
         clientId: options.githubClientId,
         clientSecret: options.githubClientSecret,
         // change to production URL when deploying
-        redirectURI: `${options.baseUrl}/api/auth/callback/github`,
+        redirectURI: `${options.productionUrl}/api/auth/callback/github`,
       },
     },
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
     },
-    trustedOrigins: ["expo://"],
+    trustedOrigins: ["expo://", "bite-recipe-app://"],
   } satisfies BetterAuthOptions;
 
   return betterAuth(config);
