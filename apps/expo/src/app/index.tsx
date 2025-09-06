@@ -10,7 +10,7 @@ import { trpc } from "~/utils/api";
 import { authClient } from "~/utils/auth";
 
 function PostCard(props: {
-  post: RouterOutputs["post"]["all"][number];
+  recipe: RouterOutputs["recipe"]["all"][number];
   onDelete: () => void;
 }) {
   return (
@@ -19,15 +19,15 @@ function PostCard(props: {
         <Link
           asChild
           href={{
-            pathname: "/post/[id]",
-            params: { id: props.post.id },
+            pathname: "/recipe/[id]",
+            params: { id: props.recipe.id },
           }}
         >
           <Pressable className="">
             <Text className="text-xl font-semibold text-primary">
-              {props.post.title}
+              {props.recipe.title}
             </Text>
-            <Text className="mt-2 text-foreground">{props.post.content}</Text>
+            <Text className="mt-2 text-foreground">{props.recipe.title}</Text>
           </Pressable>
         </Link>
       </View>
@@ -39,17 +39,18 @@ function PostCard(props: {
 }
 
 function CreatePost() {
+  const { data: session } = authClient.useSession();
   const queryClient = useQueryClient();
 
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [description, setContent] = useState("");
 
   const { mutate, error } = useMutation(
-    trpc.post.create.mutationOptions({
+    trpc.recipe.create.mutationOptions({
       async onSuccess() {
         setTitle("");
         setContent("");
-        await queryClient.invalidateQueries(trpc.post.all.queryFilter());
+        await queryClient.invalidateQueries(trpc.recipe.all.queryFilter());
       },
     }),
   );
@@ -69,13 +70,13 @@ function CreatePost() {
       )}
       <TextInput
         className="items-center rounded-md border border-input bg-background px-3 text-lg leading-[1.25] text-foreground"
-        value={content}
+        value={description}
         onChangeText={setContent}
         placeholder="Content"
       />
-      {error?.data?.zodError?.fieldErrors.content && (
+      {error?.data?.zodError?.fieldErrors.description && (
         <Text className="mb-2 text-destructive">
-          {error.data.zodError.fieldErrors.content}
+          {error.data.zodError.fieldErrors.description}
         </Text>
       )}
       <Pressable
@@ -83,7 +84,8 @@ function CreatePost() {
         onPress={() => {
           mutate({
             title,
-            content,
+            description,
+            userId: session?.user.id ?? "",
           });
         }}
       >
@@ -91,7 +93,7 @@ function CreatePost() {
       </Pressable>
       {error?.data?.code === "UNAUTHORIZED" && (
         <Text className="mt-2 text-destructive">
-          You need to be logged in to create a post
+          You need to be logged in to create a recipe
         </Text>
       )}
     </View>
@@ -125,12 +127,12 @@ function MobileAuth() {
 export default function Index() {
   const queryClient = useQueryClient();
 
-  const postQuery = useQuery(trpc.post.all.queryOptions());
+  const postQuery = useQuery(trpc.recipe.all.queryOptions());
 
   const deletePostMutation = useMutation(
-    trpc.post.delete.mutationOptions({
+    trpc.recipe.delete.mutationOptions({
       onSettled: () =>
-        queryClient.invalidateQueries(trpc.post.all.queryFilter()),
+        queryClient.invalidateQueries(trpc.recipe.all.queryFilter()),
     }),
   );
 
@@ -147,7 +149,7 @@ export default function Index() {
 
         <View className="py-2">
           <Text className="font-semibold italic text-primary">
-            Press on a post
+            Press on a recipe
           </Text>
         </View>
 
@@ -158,7 +160,7 @@ export default function Index() {
           ItemSeparatorComponent={() => <View className="h-2" />}
           renderItem={(p) => (
             <PostCard
-              post={p.item}
+              recipe={p.item}
               onDelete={() => deletePostMutation.mutate(p.item.id)}
             />
           )}
