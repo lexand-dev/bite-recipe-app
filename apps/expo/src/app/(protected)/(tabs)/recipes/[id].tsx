@@ -1,11 +1,15 @@
 import { SafeAreaView, Text, View } from "react-native";
-import { Stack, useGlobalSearchParams } from "expo-router";
+import {
+  Stack,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 
 import { trpc } from "~/utils/api";
 
-export default function Post() {
-  const { id } = useGlobalSearchParams();
+export default function Recipe() {
+  const { id } = useLocalSearchParams();
   if (!id || typeof id !== "string") throw new Error("unreachable");
   const { data } = useQuery(trpc.recipe.byId.queryOptions({ id }));
 

@@ -1,6 +1,13 @@
+import { headers } from "next/headers";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export const Header = () => {
+import { Button } from "@bite/ui/button";
+
+import { auth, getSession } from "~/auth/server";
+
+export const Header = async () => {
+  const session = await getSession();
   return (
     <header className="mb-8 flex w-full items-center justify-between p-4 shadow-sm">
       <h1 className="text-2xl font-bold tracking-tight">
@@ -24,22 +31,43 @@ export const Header = () => {
               Contact
             </Link>
           </li>
-          <li>
-            <Link
-              className="rounded-md bg-slate-500 px-4 py-2 text-white hover:bg-slate-500/80"
-              href="/sign-up"
-            >
-              sign up
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/80"
-              href="/sign-in"
-            >
-              sign in
-            </Link>
-          </li>
+          {!session ? (
+            <>
+              <li>
+                <Link
+                  className="rounded-md bg-slate-500 px-4 py-2 text-white hover:bg-slate-500/80"
+                  href="/sign-up"
+                >
+                  sign up
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/80"
+                  href="/sign-in"
+                >
+                  sign in
+                </Link>
+              </li>
+            </>
+          ) : (
+            <li>
+              <form>
+                <Button
+                  size="lg"
+                  formAction={async () => {
+                    "use server";
+                    await auth.api.signOut({
+                      headers: await headers(),
+                    });
+                    redirect("/");
+                  }}
+                >
+                  Sign out
+                </Button>
+              </form>
+            </li>
+          )}
         </ul>
       </nav>
     </header>
