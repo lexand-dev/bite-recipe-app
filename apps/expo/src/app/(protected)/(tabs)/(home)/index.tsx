@@ -8,6 +8,7 @@ import { authClient } from "~/utils/auth";
 
 function CreatePost() {
   const { data: session } = authClient.useSession();
+
   const queryClient = useQueryClient();
 
   const [title, setTitle] = useState("");
@@ -68,7 +69,7 @@ function CreatePost() {
   );
 }
 
-export default function Index() {
+export default function HomeScreen() {
   return (
     <SafeAreaView className="bg-background">
       <View className="h-full w-full bg-background p-4">

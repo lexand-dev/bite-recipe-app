@@ -38,7 +38,7 @@ function PostCard(props: {
   );
 }
 
-const RecipesScreen = () => {
+export default function RecipesScreen() {
   const queryClient = useQueryClient();
 
   const postQuery = useQuery(trpc.recipe.all.queryOptions());
@@ -79,6 +79,4 @@ const RecipesScreen = () => {
       </View>
     </SafeAreaView>
   );
-};
-
-export default RecipesScreen;
+}
