@@ -2,9 +2,9 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "Bite Recipe App",
-  slug: "bite-recipe-app",
-  scheme: "bite-recipe-app",
+  name: "Bite",
+  slug: "bite-app",
+  scheme: "bite-app",
   version: "0.1.0",
   orientation: "portrait",
   icon: "./assets/icon-light.png",
@@ -32,7 +32,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   extra: {
     eas: {
-      projectId: "4a522e55-7ed5-4676-9b2f-aa6012a8b87c",
+      projectId: "745216f6-deb5-45f6-925d-7706c1e8168c",
     },
   },
   experiments: {
@@ -55,4 +55,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   ],
+  owner: "lexand-dev",
 });

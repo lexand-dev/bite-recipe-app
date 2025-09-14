@@ -40,20 +40,20 @@ export function initAuth(options: {
         clientId: options.discordClientId,
         clientSecret: options.discordClientSecret,
         // change to production URL when deploying
-        redirectURI: `${options.productionUrl}/api/auth/callback/discord`,
+        redirectURI: `https://bite-recipe-app-nextjs.vercel.app/api/auth/callback/discord`,
       },
       github: {
         clientId: options.githubClientId,
         clientSecret: options.githubClientSecret,
         // change to production URL when deploying
-        redirectURI: `${options.productionUrl}/api/auth/callback/github`,
+        redirectURI: `${options.baseUrl}/api/auth/callback/github`,
       },
     },
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
     },
-    trustedOrigins: ["expo://", "bite-recipe-app://"],
+    trustedOrigins: ["expo://", "bite-app://"],
   } satisfies BetterAuthOptions;
 
   return betterAuth(config);

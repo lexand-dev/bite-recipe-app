@@ -4,14 +4,12 @@ import { createAuthClient } from "better-auth/react";
 
 import { getBaseUrl } from "./base-url";
 
-console.log("getBaseUrl", getBaseUrl());
-
 export const authClient = createAuthClient({
-  baseURL: getBaseUrl(),
+  baseURL: "https://bite-recipe-app-nextjs.vercel.app",
   plugins: [
     expoClient({
-      scheme: "expo",
-      storagePrefix: "expo",
+      scheme: "bite-app",
+      storagePrefix: "bite-app",
       storage: SecureStore,
     }),
   ],

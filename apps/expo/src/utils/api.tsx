@@ -29,7 +29,7 @@ export const trpc = createTRPCOptionsProxy<AppRouter>({
       }),
       httpBatchLink({
         transformer: superjson,
-        url: `${getBaseUrl()}/api/trpc`,
+        url: `https://bite-recipe-app-nextjs.vercel.app/api/trpc`,
         headers() {
           const headers = new Map<string, string>();
           headers.set("x-trpc-source", "expo-react");

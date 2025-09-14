@@ -1,5 +1,5 @@
 {
-  "extends": "@bite/tsconfig/internal-package.json",
+  "extends": "@bite/tsconfig/compiled-package.json",
   "include": ["src"],
   "exclude": ["node_modules"]
 }

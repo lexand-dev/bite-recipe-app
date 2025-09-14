@@ -1,5 +1,5 @@
 {
-  "extends": "@bite/tsconfig/internal-package.json",
+  "extends": "@bite/tsconfig/base.json",
   "compilerOptions": {
     "lib": ["ES2022", "dom", "dom.iterable"],
     "jsx": "preserve",
