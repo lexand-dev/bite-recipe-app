@@ -33,5 +33,11 @@
     "turbo": "^2.5.6",
     "typescript": "catalog:"
   },
-  "prettier": "@bite/prettier-config"
+  "prettier": "@bite/prettier-config",
+  "version": "1.0.0",
+  "dependencies": {
+    "expo": "~53.0.22",
+    "react": "catalog:react19",
+    "react-native": "0.79.6"
+  }
 }
