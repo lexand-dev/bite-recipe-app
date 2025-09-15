@@ -22,6 +22,9 @@ export const Recipes = pgTable("recipes", (t) => ({
   title: t.varchar({ length: 256 }).notNull(),
   description: t.text().notNull(),
   coverImage: t.varchar({ length: 512 }),
+  cookTime: t.text(),
+  serving: t.text(),
+  origin: t.text(),
   userId: t
     .text()
     .notNull()
@@ -37,6 +40,9 @@ export const Recipes = pgTable("recipes", (t) => ({
 export const CreateRecipeSchema = createInsertSchema(Recipes, {
   title: z.string().max(256),
   description: z.string(),
+  coverImage: z.string().optional(),
+  userId: z.string().min(1),
+  categoryId: z.string().optional(),
 }).omit({
   id: true,
   createdAt: true,
@@ -52,12 +58,11 @@ export const Ingredients = pgTable("ingredients", (t) => ({
     .notNull()
     .references(() => Recipes.id),
   name: t.varchar({ length: 128 }).notNull(),
-  quantity: t.varchar({ length: 128 }).notNull(), // Ej: "2 cups", "1 tbsp"
+  order: t.integer().notNull(), // Order of the ingredient in the list
 }));
 
 export const CreateIngredientSchema = createInsertSchema(Ingredients, {
   name: z.string().max(128),
-  quantity: z.string().max(128),
 }).omit({ id: true });
 
 /* ========== STEPS ========== */

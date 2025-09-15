@@ -1,5 +1,9 @@
+import { Text, TouchableOpacity } from "react-native";
 import { Tabs } from "expo-router";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
+
+import { Colors } from "~/constants/Colors";
 
 export default function TabsLayout() {
   return (
@@ -35,6 +39,29 @@ export default function TabsLayout() {
               color={color}
             />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: "Create",
+          tabBarLabelStyle: { display: "none" },
+          tabBarIconStyle: {
+            backgroundColor: Colors.light.primary,
+            borderRadius: 50,
+            width: 40,
+            height: 40,
+            marginTop: 2,
+            shadowColor: Colors.light.primary,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+          },
+          tabBarIcon: () => <AntDesign name="plus" size={18} color="#FFF" />,
         }}
       />
       <Tabs.Screen

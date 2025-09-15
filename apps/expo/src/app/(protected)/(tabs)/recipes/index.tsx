@@ -42,7 +42,6 @@ export default function RecipesScreen() {
   const queryClient = useQueryClient();
 
   const postQuery = useQuery(trpc.recipe.all.queryOptions());
-  console.log("postQuery", postQuery.data);
 
   const deletePostMutation = useMutation(
     trpc.recipe.delete.mutationOptions({
@@ -55,7 +54,7 @@ export default function RecipesScreen() {
     <SafeAreaView className="bg-background">
       <View className="h-full w-full bg-background p-4">
         <Text className="pb-2 text-center text-5xl font-bold text-foreground">
-          Create <Text className="text-primary">T3</Text> Turbo
+          Bite<Text className="text-primary">Recipe</Text> App
         </Text>
 
         <View className="py-2">
