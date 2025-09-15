@@ -2,7 +2,7 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { z } from "zod/v4";
 
 import { desc, eq } from "@bite/db";
-import { CreateRecipeSchema, Recipes } from "@bite/db/schema";
+import { Recipes } from "@bite/db/schema";
 
 import { protectedProcedure, publicProcedure } from "../trpc";
 
@@ -20,12 +20,6 @@ export const recipeRouter = {
       return ctx.db.query.Recipes.findFirst({
         where: eq(Recipes.id, input.id),
       });
-    }),
-
-  create: protectedProcedure
-    .input(CreateRecipeSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.db.insert(Recipes).values(input);
     }),
 
   delete: protectedProcedure.input(z.string()).mutation(({ ctx, input }) => {

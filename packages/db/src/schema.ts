@@ -1,7 +1,5 @@
 import { sql } from "drizzle-orm";
 import { pgTable } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod/v4";
 
 import { user } from "./auth-schema";
 
@@ -11,10 +9,6 @@ export const Categories = pgTable("categories", (t) => ({
   name: t.varchar({ length: 128 }).notNull().unique(),
   description: t.text(),
 }));
-
-export const CreateCategorySchema = createInsertSchema(Categories, {
-  name: z.string().max(128),
-}).omit({ id: true });
 
 /* ========== RECIPES ========== */
 export const Recipes = pgTable("recipes", (t) => ({
@@ -37,19 +31,6 @@ export const Recipes = pgTable("recipes", (t) => ({
     .$onUpdateFn(() => sql`now()`),
 }));
 
-export const CreateRecipeSchema = createInsertSchema(Recipes, {
-  title: z.string().max(256),
-  description: z.string(),
-  coverImage: z.string().optional(),
-  userId: z.string().min(1),
-  categoryId: z.string().optional(),
-}).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  isPublished: true,
-});
-
 /* ========== INGREDIENTS ========== */
 export const Ingredients = pgTable("ingredients", (t) => ({
   id: t.uuid().notNull().primaryKey().defaultRandom(),
@@ -61,10 +42,6 @@ export const Ingredients = pgTable("ingredients", (t) => ({
   order: t.integer().notNull(), // Order of the ingredient in the list
 }));
 
-export const CreateIngredientSchema = createInsertSchema(Ingredients, {
-  name: z.string().max(128),
-}).omit({ id: true });
-
 /* ========== STEPS ========== */
 export const Steps = pgTable("steps", (t) => ({
   id: t.uuid().notNull().primaryKey().defaultRandom(),
@@ -72,70 +49,18 @@ export const Steps = pgTable("steps", (t) => ({
     .uuid()
     .notNull()
     .references(() => Recipes.id),
-  stepNumber: t.integer().notNull(),
+  order: t.integer().notNull(),
   instruction: t.text().notNull(),
 }));
 
-export const CreateStepSchema = createInsertSchema(Steps, {
-  instruction: z.string(),
-  stepNumber: z.number().min(1),
-}).omit({ id: true });
-
-/* ========== COMMENTS ========== */
-export const Comments = pgTable("comments", (t) => ({
+/* ========== STEP IMAGES ========== */
+export const StepImages = pgTable("step_images", (t) => ({
   id: t.uuid().notNull().primaryKey().defaultRandom(),
-  recipeId: t
+  stepId: t
     .uuid()
     .notNull()
-    .references(() => Recipes.id),
-  userId: t
-    .text()
-    .notNull()
-    .references(() => user.id),
-  content: t.text().notNull(),
-  createdAt: t.timestamp().defaultNow().notNull(),
+    .references(() => Steps.id),
+  imageUrl: t.text().notNull(),
 }));
-
-export const CreateCommentSchema = createInsertSchema(Comments, {
-  content: z.string().max(512),
-}).omit({ id: true, createdAt: true });
-
-/* ========== BOOKMARKS ========== */
-export const Bookmarks = pgTable("bookmarks", (t) => ({
-  id: t.uuid().notNull().primaryKey().defaultRandom(),
-  userId: t
-    .text()
-    .notNull()
-    .references(() => user.id),
-  recipeId: t
-    .uuid()
-    .notNull()
-    .references(() => Recipes.id),
-  createdAt: t.timestamp().defaultNow().notNull(),
-}));
-
-export const CreateBookmarkSchema = createInsertSchema(Bookmarks, {}).omit({
-  id: true,
-  createdAt: true,
-});
-
-/* ========== LIKES ========== */
-export const Likes = pgTable("likes", (t) => ({
-  id: t.uuid().notNull().primaryKey().defaultRandom(),
-  userId: t
-    .text()
-    .notNull()
-    .references(() => user.id),
-  recipeId: t
-    .uuid()
-    .notNull()
-    .references(() => Recipes.id),
-  createdAt: t.timestamp().defaultNow().notNull(),
-}));
-
-export const CreateLikeSchema = createInsertSchema(Likes, {}).omit({
-  id: true,
-  createdAt: true,
-});
 
 export * from "./auth-schema";
