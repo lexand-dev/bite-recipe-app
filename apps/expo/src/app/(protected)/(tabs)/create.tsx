@@ -1,22 +1,15 @@
-import React, { useState } from "react";
-import { Pressable, Text, TextInput } from "react-native";
+import { Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { ThemedView } from "~/components/ThemeView";
-import { trpc } from "~/utils/api";
-import { authClient } from "~/utils/auth";
+import { CreateRecipeScreen } from "~/modules/recipe/ui/screens/recipe";
 
 export default function CreatePost() {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
-
-  const queryClient = useQueryClient();
 
   return (
-    <SafeAreaView className="bg-background">
+    <SafeAreaView>
       <Stack.Screen
         options={{
           title: "Create Recipe",
@@ -29,7 +22,8 @@ export default function CreatePost() {
           ),
         }}
       />
-      <ThemedView className="flex gap-2"></ThemedView>
+      <CreateRecipeScreen />
+      {/* <PostComponent /> */}
     </SafeAreaView>
   );
 }

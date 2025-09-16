@@ -4,6 +4,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const Logo = () => {
   return (
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
     <Image source={require("@/assets/icon.png")} className="ml-0 mr-4 size-8" />
   );
 };

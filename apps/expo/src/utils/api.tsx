@@ -6,7 +6,8 @@ import superjson from "superjson";
 import type { AppRouter } from "@bite/api";
 
 import { authClient } from "./auth";
-import { getBaseUrl } from "./base-url";
+
+/* import { getBaseUrl } from "./base-url"; */
 
 export const queryClient = new QueryClient({
   defaultOptions: {

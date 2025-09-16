@@ -53,7 +53,9 @@
     "AUTH_GITHUB_SECRET",
     "AUTH_REDIRECT_PROXY_URL",
     "AUTH_SECRET",
-    "PORT"
+    "PORT",
+    "EXPO_PUBLIC_SUPABASE_URL",
+    "EXPO_PUBLIC_SUPABASE_ANON_KEY"
   ],
   "globalPassThroughEnv": [
     "NODE_ENV",

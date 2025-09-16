@@ -1,4 +1,3 @@
-import { Text, TouchableOpacity } from "react-native";
 import { Tabs } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
