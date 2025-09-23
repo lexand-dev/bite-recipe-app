@@ -25,85 +25,72 @@ export const recipeRouter = {
   create: protectedProcedure
     .input(CreateRecipeSchema)
     .mutation(async ({ ctx, input }) => {
-      const { user } = ctx.session;
-
-      let userId;
-
-      if (!user.id) {
-        userId = input.userId;
-      } else {
-        userId = user.id;
-      }
-
-      if (!userId) {
+      if (!input.userId) {
         throw new Error("User ID is required to create a recipe");
       }
 
       try {
-        // Iniciar transacción
-        return await ctx.db.transaction(async (tx) => {
-          // 1. Crear la receta principal
-          const [recipe] = await tx
-            .insert(Recipes)
-            .values({
-              title: input.title,
-              description: input.description,
-              coverImage: input.coverImage,
-              cookTime: input.cookTime,
-              serving: input.serving,
-              origin: input.origin,
-              categoryId: input.categoryId,
-              userId,
-              isPublished: false,
-            })
-            .returning();
+        // 1. Create the recipe
+        const [recipe] = await ctx.db
+          .insert(Recipes)
+          .values({
+            title: input.title,
+            description: input.description,
+            coverImage: input.coverImage,
+            cookTime: input.cookTime,
+            serving: input.serving,
+            origin: input.origin,
+            categoryId: input.categoryId,
+            userId: input.userId,
+            isPublished: false,
+          })
+          .returning({
+            id: Recipes.id,
+          });
 
-          if (!recipe) {
-            throw new Error("Failed to create recipe");
+        if (!recipe?.id) {
+          throw new Error("Failed to create recipe");
+        }
+
+        if (input.ingredients.length === 0) {
+          throw new Error("At least one ingredient is required");
+        }
+
+        // 2. Insert ingredients
+        const createIngredients = await ctx.db.insert(Ingredients).values(
+          input.ingredients.map((ingredient, index) => ({
+            recipeId: recipe.id,
+            name: ingredient.name,
+            order: ingredient.order || index,
+          })),
+        );
+
+        // 3. Insert steps and step images
+        const stepPromises = input.steps.map(async (step, index) => {
+          const [createdStep] = await ctx.db
+            .insert(Steps)
+            .values({
+              instruction: step.instruction,
+              recipeId: recipe.id,
+              order: step.order || index,
+            })
+            .returning({ id: Steps.id });
+
+          if (!createdStep?.id) {
+            throw new Error("Failed to create step");
           }
 
-          // 2. Insertar ingredientes
-          if (input.ingredients.length > 0) {
-            await tx.insert(Ingredients).values(
-              input.ingredients.map((ingredient, index) => ({
-                recipeId: recipe.id,
-                name: ingredient.name,
-                order: ingredient.order || index,
+          if (step.images && step.images.length > 0) {
+            await ctx.db.insert(StepImages).values(
+              step.images.map((image) => ({
+                stepId: createdStep.id,
+                imageUrl: image,
               })),
             );
           }
-
-          // 3. Insertar pasos con sus imágenes
-          if (input.steps.length > 0) {
-            for (const [index, step] of input.steps.entries()) {
-              // Insertar el paso
-              const [insertedStep] = await tx
-                .insert(Steps)
-                .values({
-                  recipeId: recipe.id,
-                  instruction: step.instruction,
-                  order: step.order || index,
-                })
-                .returning();
-
-              if (!insertedStep) {
-                throw new Error("Failed to create recipe");
-              }
-
-              // Insertar imágenes del paso si existen
-              if (step.images && step.images.length > 0) {
-                await tx.insert(StepImages).values(
-                  step.images.map((imageUrl) => ({
-                    stepId: insertedStep.id,
-                    imageUrl: imageUrl,
-                  })),
-                );
-              }
-            }
-          }
-
-          return recipe;
         });
+
+        await Promise.all([createIngredients, stepPromises]);
       } catch (error) {
         console.error("Error creating recipe:", error);
         throw new Error("Failed to create recipe");
